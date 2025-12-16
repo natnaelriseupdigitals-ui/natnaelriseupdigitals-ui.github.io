@@ -77,31 +77,53 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
     window.addEventListener('resize', handleResize);
     
     // Aggressive video autoplay logic
-    const playVideo = () => {
-        if (videoRef.current) {
-            videoRef.current.muted = true;
-            videoRef.current.defaultMuted = true;
-            videoRef.current.playsInline = true;
-            
-            const playPromise = videoRef.current.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    // Retry once if failed
-                    setTimeout(() => {
-                        if (videoRef.current) {
-                             videoRef.current.muted = true;
-                             videoRef.current.play().catch(e => console.error("Retry failed", e));
-                        }
-                    }, 50);
-                });
-            }
+    const attemptPlay = () => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        // Force critical attributes for iOS/Mobile
+        video.muted = true;
+        video.defaultMuted = true;
+        video.setAttribute('playsinline', 'true');
+        video.setAttribute('webkit-playsinline', 'true');
+        video.setAttribute('muted', 'true');
+
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log("Autoplay prevented:", error);
+                // Retry slightly later
+                setTimeout(() => {
+                    if (video.paused) {
+                        video.muted = true;
+                        video.play().catch(e => console.error("Retry failed", e));
+                    }
+                }, 100);
+            });
         }
     };
 
-    playVideo();
+    attemptPlay();
+
+    // Fallback: Unlock audio/video context on first touch (for Instagram/Low Power Mode)
+    const handleFirstTouch = () => {
+        const video = videoRef.current;
+        if (video && video.paused) {
+            video.muted = true;
+            video.play().catch(() => {});
+        }
+        // Remove listener after first interaction
+        window.removeEventListener('touchstart', handleFirstTouch);
+        window.removeEventListener('click', handleFirstTouch);
+    };
+
+    window.addEventListener('touchstart', handleFirstTouch, { passive: true });
+    window.addEventListener('click', handleFirstTouch, { passive: true });
 
     return () => {
         window.removeEventListener('resize', handleResize);
+        window.removeEventListener('touchstart', handleFirstTouch);
+        window.removeEventListener('click', handleFirstTouch);
     };
   }, []);
 
@@ -157,15 +179,10 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
       {/* Hero Section */}
       <section className="relative h-screen w-full overflow-hidden bg-black">
         {/* Background Video */}
-        <div className="absolute inset-0 w-full h-full">
+        <div className="absolute inset-0 w-full h-full pointer-events-none select-none">
             <div className="absolute inset-0 bg-black/50 z-10"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-orbit-black via-transparent to-transparent z-10"></div>
             
-            {/* 
-                Video Opacity Logic: 
-                Start at 0 opacity. When 'onPlaying' fires, set opacity to 80 (or desired).
-                This prevents the "static poster with play button" flash.
-            */}
             <video 
                 ref={videoRef}
                 autoPlay 
@@ -176,11 +193,12 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
                 controls={false}
                 disablePictureInPicture
                 disableRemotePlayback
+                x-webkit-airplay="deny"
                 className={`w-full h-full object-cover scale-110 transition-opacity duration-1000 ${isVideoPlaying ? 'opacity-80' : 'opacity-0'}`}
                 onPlaying={() => setIsVideoPlaying(true)}
+                style={{ pointerEvents: 'none' }} 
             >
                 <source src="https://www.dropbox.com/scl/fi/tz20d2xwyzl770wkhehkx/IMG_0669-2.mp4?rlkey=wptpf6cnzoz5vbjvzkfh2si8t&st=r71hja1x&raw=1" type="video/mp4" />
-                Your browser does not support the video tag.
             </video>
         </div>
 

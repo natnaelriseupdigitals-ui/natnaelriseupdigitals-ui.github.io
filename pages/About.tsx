@@ -7,28 +7,51 @@ export const About: React.FC = () => {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   useEffect(() => {
-    // Ensure video plays
-    const playVideo = () => {
-        if (videoRef.current) {
-            videoRef.current.muted = true;
-            videoRef.current.defaultMuted = true;
-            videoRef.current.playsInline = true;
-            
-            const playPromise = videoRef.current.play();
-            if (playPromise !== undefined) {
-                playPromise.catch(error => {
-                    setTimeout(() => {
-                        if(videoRef.current) {
-                            videoRef.current.muted = true;
-                            videoRef.current.play().catch(e => console.error("Retry failed", e));
-                        }
-                    }, 50);
-                });
-            }
+    // Ensure video plays with extreme prejudice against blocking
+    const attemptPlay = () => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        // Force critical attributes for iOS/Mobile
+        video.muted = true;
+        video.defaultMuted = true;
+        video.setAttribute('playsinline', 'true');
+        video.setAttribute('webkit-playsinline', 'true');
+        video.setAttribute('muted', 'true');
+
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                setTimeout(() => {
+                    if (video.paused) {
+                        video.muted = true;
+                        video.play().catch(e => console.error("Retry failed", e));
+                    }
+                }, 100);
+            });
         }
     };
     
-    playVideo();
+    attemptPlay();
+
+    // Unlock logic for Instagram/WeChat/LowPower
+    const handleFirstTouch = () => {
+        const video = videoRef.current;
+        if (video && video.paused) {
+            video.muted = true;
+            video.play().catch(() => {});
+        }
+        window.removeEventListener('touchstart', handleFirstTouch);
+        window.removeEventListener('click', handleFirstTouch);
+    };
+
+    window.addEventListener('touchstart', handleFirstTouch, { passive: true });
+    window.addEventListener('click', handleFirstTouch, { passive: true });
+
+    return () => {
+        window.removeEventListener('touchstart', handleFirstTouch);
+        window.removeEventListener('click', handleFirstTouch);
+    };
   }, []);
 
   return (
@@ -50,11 +73,12 @@ export const About: React.FC = () => {
             controls={false}
             disablePictureInPicture
             disableRemotePlayback
+            x-webkit-airplay="deny"
             className={`w-full h-full object-cover scale-110 transition-opacity duration-1000 ${isVideoPlaying ? 'opacity-80' : 'opacity-0'}`}
             onPlaying={() => setIsVideoPlaying(true)}
+            style={{ pointerEvents: 'none' }}
         >
             <source src="https://www.dropbox.com/scl/fi/tz20d2xwyzl770wkhehkx/IMG_0669-2.mp4?rlkey=wptpf6cnzoz5vbjvzkfh2si8t&st=r71hja1x&raw=1" type="video/mp4" />
-            Your browser does not support the video tag.
         </video>
 
          {/* Scroll Indicator */}

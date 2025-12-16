@@ -29,41 +29,47 @@ function App() {
   // Robust Asset Preloading Logic
   useEffect(() => {
     const preloadAssets = async () => {
-      const startTime = Date.now();
-
       // 1. Preload Images
       const imagePromises = ASSETS.images.map(src => {
         return new Promise((resolve) => {
           const img = new Image();
           img.src = src;
           img.onload = () => resolve(true);
-          img.onerror = () => resolve(false); // Resolve even on error to avoid blocking
+          img.onerror = () => resolve(false); 
         });
       });
 
-      // 2. Preload Video (The critical part)
+      // 2. Preload Video
       const videoPromise = new Promise((resolve) => {
         const video = document.createElement('video');
-        video.oncanplaythrough = () => resolve(true);
-        video.onloadeddata = () => resolve(true); // Fallback if canplaythrough doesn't fire fast enough
+        
+        // We wait for HAVE_ENOUGH_DATA (4) or HAVE_FUTURE_DATA (3) to ensure smoothness
+        const checkReadyState = () => {
+             if (video.readyState >= 3) {
+                 resolve(true);
+             }
+        };
+
+        video.addEventListener('canplaythrough', () => resolve(true), { once: true });
+        video.addEventListener('loadeddata', checkReadyState);
+        video.addEventListener('progress', checkReadyState);
+        
         video.onerror = () => resolve(false);
         
-        // Safety timeout for video (e.g., if connection is very slow, don't wait forever)
-        // We give it a generous 8 seconds to buffer enough data
+        // Timeout to prevent hanging if connection is extremely slow
         setTimeout(() => resolve(false), 8000);
 
         video.src = ASSETS.video;
         video.preload = 'auto';
         video.muted = true;
         video.playsInline = true;
-        video.load(); // Force browser to start fetching
+        video.load(); 
       });
 
-      // 3. Minimum Display Time (2.5 seconds)
-      // This ensures the branding animation is seen even if assets load instantly
-      const timerPromise = new Promise(resolve => setTimeout(resolve, 2500));
+      // 3. Minimum Display Time
+      // Increased to 3.5 seconds to cover initialization time and hide buffering
+      const timerPromise = new Promise(resolve => setTimeout(resolve, 3500));
 
-      // Wait for everything
       try {
         await Promise.all([...imagePromises, videoPromise, timerPromise]);
       } catch (err) {

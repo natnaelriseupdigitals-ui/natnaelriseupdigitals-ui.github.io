@@ -60,6 +60,20 @@
         -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
         color: transparent;
       }
+      /* FORCE HIDE NATIVE VIDEO CONTROLS ON iOS/MOBILE */
+      video::-webkit-media-controls {
+          display:none !important;
+      }
+      video::-webkit-media-controls-start-playback-button {
+          display: none !important;
+          -webkit-appearance: none;
+      }
+      video::-webkit-media-controls-play-button {
+          display: none !important;
+      }
+      video::-webkit-media-controls-panel {
+          display: none !important;
+      }
     </style>
   <script type="importmap">
 {
