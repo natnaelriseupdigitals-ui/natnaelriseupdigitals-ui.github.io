@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Reveal } from '../components/Reveal';
 import { ArrowDown } from 'lucide-react';
 
 export const About: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   useEffect(() => {
     // Ensure video plays
@@ -16,31 +17,29 @@ export const About: React.FC = () => {
             const playPromise = videoRef.current.play();
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
-                    console.log("Auto-play was prevented:", error);
                     setTimeout(() => {
                         if(videoRef.current) {
                             videoRef.current.muted = true;
                             videoRef.current.play().catch(e => console.error("Retry failed", e));
                         }
-                    }, 100);
+                    }, 50);
                 });
             }
         }
     };
     
     playVideo();
-    const timer = setTimeout(playVideo, 500);
-    return () => clearTimeout(timer);
   }, []);
 
   return (
     <div className="bg-orbit-black min-h-screen">
       
       {/* Cinematic Hero Section - Video Only */}
-      <section className="relative h-screen w-full overflow-hidden">
+      <section className="relative h-screen w-full overflow-hidden bg-black">
          <div className="absolute inset-0 bg-black/50 z-10"></div>
          <div className="absolute inset-0 bg-gradient-to-t from-orbit-black via-transparent to-transparent z-10"></div>
          
+         {/* Opacity transition triggers only when video starts playing */}
          <video 
             ref={videoRef}
             autoPlay 
@@ -49,7 +48,10 @@ export const About: React.FC = () => {
             playsInline
             preload="auto"
             controls={false}
-            className="w-full h-full object-cover scale-110 opacity-80"
+            disablePictureInPicture
+            disableRemotePlayback
+            className={`w-full h-full object-cover scale-110 transition-opacity duration-1000 ${isVideoPlaying ? 'opacity-80' : 'opacity-0'}`}
+            onPlaying={() => setIsVideoPlaying(true)}
         >
             <source src="https://www.dropbox.com/scl/fi/tz20d2xwyzl770wkhehkx/IMG_0669-2.mp4?rlkey=wptpf6cnzoz5vbjvzkfh2si8t&st=r71hja1x&raw=1" type="video/mp4" />
             Your browser does not support the video tag.

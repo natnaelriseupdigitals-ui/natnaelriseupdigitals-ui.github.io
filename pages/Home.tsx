@@ -67,7 +67,10 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
   const [isAutoPlay, setIsAutoPlay] = useState(true);
   const autoPlayTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  
+  // Video State
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
@@ -83,26 +86,22 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
             const playPromise = videoRef.current.play();
             if (playPromise !== undefined) {
                 playPromise.catch(error => {
-                    console.log("Auto-play was prevented:", error);
                     // Retry once if failed
                     setTimeout(() => {
                         if (videoRef.current) {
                              videoRef.current.muted = true;
                              videoRef.current.play().catch(e => console.error("Retry failed", e));
                         }
-                    }, 100);
+                    }, 50);
                 });
             }
         }
     };
 
     playVideo();
-    // Force check slightly after mount for some mobile browsers
-    const timer = setTimeout(playVideo, 500);
 
     return () => {
         window.removeEventListener('resize', handleResize);
-        clearTimeout(timer);
     };
   }, []);
 
@@ -156,12 +155,17 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
   return (
     <div className="w-full">
       {/* Hero Section */}
-      <section className="relative h-screen w-full overflow-hidden">
+      <section className="relative h-screen w-full overflow-hidden bg-black">
         {/* Background Video */}
-        <div className="absolute inset-0 w-full h-full bg-black">
+        <div className="absolute inset-0 w-full h-full">
             <div className="absolute inset-0 bg-black/50 z-10"></div>
             <div className="absolute inset-0 bg-gradient-to-t from-orbit-black via-transparent to-transparent z-10"></div>
             
+            {/* 
+                Video Opacity Logic: 
+                Start at 0 opacity. When 'onPlaying' fires, set opacity to 80 (or desired).
+                This prevents the "static poster with play button" flash.
+            */}
             <video 
                 ref={videoRef}
                 autoPlay 
@@ -170,7 +174,10 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
                 playsInline
                 preload="auto"
                 controls={false}
-                className="w-full h-full object-cover scale-110 opacity-80"
+                disablePictureInPicture
+                disableRemotePlayback
+                className={`w-full h-full object-cover scale-110 transition-opacity duration-1000 ${isVideoPlaying ? 'opacity-80' : 'opacity-0'}`}
+                onPlaying={() => setIsVideoPlaying(true)}
             >
                 <source src="https://www.dropbox.com/scl/fi/tz20d2xwyzl770wkhehkx/IMG_0669-2.mp4?rlkey=wptpf6cnzoz5vbjvzkfh2si8t&st=r71hja1x&raw=1" type="video/mp4" />
                 Your browser does not support the video tag.
