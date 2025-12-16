@@ -73,14 +73,37 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     
-    // Ensure video plays
-    if (videoRef.current) {
-        videoRef.current.defaultMuted = true;
-        videoRef.current.muted = true;
-        videoRef.current.play().catch(e => console.error("Video autoplay blocked:", e));
-    }
+    // Aggressive video autoplay logic
+    const playVideo = () => {
+        if (videoRef.current) {
+            videoRef.current.muted = true;
+            videoRef.current.defaultMuted = true;
+            videoRef.current.playsInline = true;
+            
+            const playPromise = videoRef.current.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("Auto-play was prevented:", error);
+                    // Retry once if failed
+                    setTimeout(() => {
+                        if (videoRef.current) {
+                             videoRef.current.muted = true;
+                             videoRef.current.play().catch(e => console.error("Retry failed", e));
+                        }
+                    }, 100);
+                });
+            }
+        }
+    };
 
-    return () => window.removeEventListener('resize', handleResize);
+    playVideo();
+    // Force check slightly after mount for some mobile browsers
+    const timer = setTimeout(playVideo, 500);
+
+    return () => {
+        window.removeEventListener('resize', handleResize);
+        clearTimeout(timer);
+    };
   }, []);
 
   // Auto Switch
@@ -145,6 +168,8 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
                 muted 
                 loop 
                 playsInline
+                preload="auto"
+                controls={false}
                 className="w-full h-full object-cover scale-110 opacity-80"
             >
                 <source src="https://www.dropbox.com/scl/fi/tz20d2xwyzl770wkhehkx/IMG_0669-2.mp4?rlkey=wptpf6cnzoz5vbjvzkfh2si8t&st=r71hja1x&raw=1" type="video/mp4" />

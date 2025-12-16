@@ -19,6 +19,11 @@ function App() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Scroll to top whenever page changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [currentPage]);
+
   const renderPage = () => {
     switch (currentPage) {
       case Page.HOME:
