@@ -1,61 +1,37 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Page } from '../types';
 import { Reveal } from '../components/Reveal';
-import { Aperture, Film, Heart, ArrowRight, ChevronLeft, ChevronRight, ArrowDown, ArrowUpRight, ArrowLeft } from 'lucide-react';
+import { Aperture, Film, Heart, ArrowRight, ChevronLeft, ChevronRight, ArrowDown, ArrowUpRight, ArrowLeft, Volume2, VolumeX } from 'lucide-react';
 
 interface HomeProps {
   setPage: (page: Page) => void;
 }
 
-// Reusing data structure for consistency with Works page
+// Updated data with 3 Horizontal Videos - Forced raw=1 for streaming
 const featuredWorks = [
   { 
     id: 1, 
-    title: "Eternal Vows", 
-    category: "Wedding Photography", 
-    client: "Private",
+    title: "Urban Flow", 
+    category: "Cinematography", 
+    client: "Concept",
     year: "2024",
-    img: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80", 
+    video: "https://www.dropbox.com/scl/fi/07gehbamxu1153uwfzu3e/home-.-horizontal.mp4?rlkey=p7lqi0wglmiwsxgy1wy64jbrq&st=g5vajvz6&raw=1" 
   },
   { 
     id: 2, 
-    title: "Neon Gaze", 
-    category: "Portrait Photography", 
-    client: "Editorial",
-    year: "2023",
-    img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80", 
+    title: "Coastal Vibe", 
+    category: "Travel", 
+    client: "Explore",
+    year: "2024",
+    video: "https://www.dropbox.com/scl/fi/85hdwt3zp14t906l471rb/more-like-these-Or-the-pov-vids-horizontal.mp4?rlkey=yaqwfzz8mjo8xonmztt9lk8py&st=xufsz2at&raw=1" 
   },
   { 
     id: 3, 
-    title: "Lost in Tokyo", 
-    category: "Travel Photography", 
-    client: "Condé Nast",
+    title: "Purple Sunset", 
+    category: "Nature", 
+    client: "Atmosphere",
     year: "2023",
-    img: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1200&q=80", 
-  },
-  { 
-    id: 4, 
-    title: "Silk & Shadow", 
-    category: "Fashion Photography", 
-    client: "Vogue",
-    year: "2024",
-    img: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80", 
-  },
-  { 
-    id: 5, 
-    title: "Alpine Silence", 
-    category: "Travel Photography", 
-    client: "Nat Geo",
-    year: "2024",
-    img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80", 
-  },
-  { 
-    id: 6, 
-    title: "Golden Hour", 
-    category: "Wedding Photography", 
-    client: "Private",
-    year: "2023",
-    img: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=1200&q=80", 
+    video: "https://www.dropbox.com/scl/fi/gvz4m0i4qt6tmhuwtszeu/purple-frames-cinematography-ocean-beach-sunset-horizontal.mp4?rlkey=okqprv70ip1yf0lonxl8i3fqy&st=wd4elu9s&raw=1" 
   },
 ];
 
@@ -68,15 +44,18 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
   const autoPlayTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
   
-  // Video State
+  // Hero Video State
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
+  
+  // Audio State for Modal
+  const [isMuted, setIsMuted] = useState(false);
 
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener('resize', handleResize);
     
-    // Aggressive video autoplay logic
+    // Aggressive video autoplay logic for Hero
     const attemptPlay = () => {
         const video = videoRef.current;
         if (!video) return;
@@ -91,7 +70,6 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
         const playPromise = video.play();
         if (playPromise !== undefined) {
             playPromise.catch(error => {
-                console.log("Autoplay prevented:", error);
                 // Retry slightly later
                 setTimeout(() => {
                     if (video.paused) {
@@ -112,7 +90,6 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
             video.muted = true;
             video.play().catch(() => {});
         }
-        // Remove listener after first interaction
         window.removeEventListener('touchstart', handleFirstTouch);
         window.removeEventListener('click', handleFirstTouch);
     };
@@ -127,13 +104,13 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
     };
   }, []);
 
-  // Auto Switch
+  // Auto Switch - 3 Seconds Interval
   useEffect(() => {
     if (!isAutoPlay) return;
 
     const interval = setInterval(() => {
         setActiveIndex(prev => prev + 1);
-    }, 1000); // 1 second interval
+    }, 3000); // 3 seconds interval
 
     return () => clearInterval(interval);
   }, [isAutoPlay]);
@@ -189,16 +166,17 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
                 muted 
                 loop 
                 playsInline
+                webkit-playsinline="true"
                 preload="auto"
                 controls={false}
                 disablePictureInPicture
                 disableRemotePlayback
                 x-webkit-airplay="deny"
-                className={`w-full h-full object-cover scale-110 transition-opacity duration-1000 ${isVideoPlaying ? 'opacity-80' : 'opacity-0'}`}
+                className={`w-full h-full object-cover scale-110`}
                 onPlaying={() => setIsVideoPlaying(true)}
                 style={{ pointerEvents: 'none' }} 
             >
-                <source src="https://www.dropbox.com/scl/fi/tz20d2xwyzl770wkhehkx/IMG_0669-2.mp4?rlkey=wptpf6cnzoz5vbjvzkfh2si8t&st=r71hja1x&raw=1" type="video/mp4" />
+                <source src="https://www.dropbox.com/scl/fi/8n8x2l0ehc1d7fxai8aoh/this-one-took-a-while-inspo-from-scoobafiles-tylerbaileytravel-travel-nature.mp4?rlkey=g4jizjr8vfgqih1z01c9cbeu8&st=aolhwlws&raw=1" type="video/mp4" />
             </video>
         </div>
 
@@ -279,7 +257,7 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
         </div>
 
         {/* --- UNIFIED CAROUSEL (Mobile & Desktop) --- */}
-        <div className="relative h-[500px] md:h-[600px] w-full flex items-center justify-center perspective-1000">
+        <div className="relative h-[300px] md:h-[500px] w-full flex items-center justify-center perspective-1000">
             
             {/* Arrows */}
             <button 
@@ -302,15 +280,18 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
                     const work = getVisibleData(index);
                     const isCenter = offset === 0;
                     
-                    // Responsive Scaling & Spacing
-                    // Desktop: Fixed pixel values
-                    // Mobile: Viewport width based values
-                    const spacing = isMobile ? windowWidth * 0.65 : 450; 
-                    const itemWidth = isMobile ? '65vw' : '400px';
+                    // Responsive Scaling & Spacing for HORIZONTAL VIDEO (16:9)
+                    // Mobile: Reduce width to 70vw to allow peeking. Spacing 75% of screen.
+                    const spacing = isMobile ? windowWidth * 0.75 : 700; 
+                    const itemWidth = isMobile ? '70vw' : '640px';
 
                     const xPos = offset * spacing;
                     
-                    let scale = isCenter ? 1.15 : (Math.abs(offset) === 1 ? 0.9 : 0.8);
+                    // Slightly reduce mobile scale to prevent overlap
+                    const centerScale = isMobile ? 1.05 : 1.15;
+                    const sideScale = isMobile ? 0.85 : 0.9;
+                    
+                    let scale = isCenter ? centerScale : (Math.abs(offset) === 1 ? sideScale : 0.7);
                     let opacity = isCenter ? 1 : (Math.abs(offset) === 1 ? 0.6 : 0.3);
                     let zIndex = isCenter ? 20 : (Math.abs(offset) === 1 ? 10 : 0);
                     let blur = isCenter ? 0 : (Math.abs(offset) === 1 ? 1 : 2);
@@ -322,24 +303,30 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
                             className="absolute top-1/2 left-1/2 bg-gray-900 shadow-2xl shadow-black cursor-pointer transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]"
                             style={{
                                 width: itemWidth,
-                                aspectRatio: '4/5',
+                                aspectRatio: '16/9',
                                 transform: `translate(-50%, -50%) translateX(${xPos}px) scale(${scale})`,
                                 opacity: opacity,
                                 zIndex: zIndex,
                                 filter: `grayscale(${isCenter ? '0%' : '100%'}) blur(${blur}px)`,
                             }}
                         >
-                            <div className="w-full h-full relative overflow-hidden group rounded-sm">
-                                <img 
-                                    src={work.img} 
-                                    alt={work.title} 
-                                    className="w-full h-full object-cover" 
+                            {/* ROUNDED CORNERS */}
+                            <div className="w-full h-full relative overflow-hidden group rounded-2xl border border-white/10">
+                                <video
+                                    src={work.video}
+                                    autoPlay
+                                    muted
+                                    loop
+                                    playsInline
+                                    webkit-playsinline="true"
+                                    preload="auto"
+                                    className="w-full h-full object-cover"
                                 />
                                 <div className={`absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex flex-col justify-end p-6 md:p-8 transition-opacity duration-300 ${isCenter ? 'opacity-100' : 'opacity-0'}`}>
                                     <p className="text-orange-500 text-[10px] md:text-xs font-bold uppercase tracking-widest mb-2">{work.category}</p>
                                     <h3 className="text-xl md:text-3xl font-black text-white uppercase tracking-tight">{work.title}</h3>
                                     <div className="flex items-center gap-2 mt-4 text-[10px] md:text-xs font-bold uppercase tracking-widest text-white/80">
-                                        <span>View Case</span> <ArrowUpRight size={14} />
+                                        <span>View Film</span> <ArrowUpRight size={14} />
                                     </div>
                                 </div>
                             </div>
@@ -378,21 +365,22 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
       </section>
 
 
-      {/* --- CAROUSEL MODAL (Kept same) --- */}
+      {/* --- VIDEO CAROUSEL MODAL --- */}
        <div 
         className={`fixed inset-0 z-[60] bg-orbit-black flex flex-col justify-center overflow-hidden transition-all duration-500 ${selectedWorkIndex !== null ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'}`}
       >
         <style>{`
             :root {
-            --item-width: 80vw;
+            /* Horizontal Video Modal Settings */
+            --item-width: 85vw;
             --gap: 5vw;
-            --offset-start: 10vw;
+            --offset-start: 7.5vw;
             }
             @media (min-width: 768px) {
             :root {
-                --item-width: 35vw;
-                --gap: 6vw;
-                --offset-start: 32.5vw;
+                --item-width: 60vw;
+                --gap: 5vw;
+                --offset-start: 20vw;
             }
             }
         `}</style>
@@ -411,6 +399,14 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
                 </div>
                 <span className="hidden md:inline">Close</span>
             </button>
+            
+            {/* Audio Toggle in Modal */}
+            <button 
+                onClick={() => setIsMuted(!isMuted)}
+                className="p-3 border border-white/20 rounded-full hover:bg-white hover:text-black transition-all text-white"
+            >
+                {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+            </button>
 
             {selectedWorkIndex !== null && (
                 <div className="text-right">
@@ -425,7 +421,7 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
         </div>
 
         {/* Carousel Container */}
-        <div className="relative z-10 w-full h-[70vh] md:h-[80vh] flex items-center mt-12 md:mt-0">
+        <div className="relative z-10 w-full h-[60vh] md:h-[80vh] flex items-center mt-12 md:mt-0">
             
             {/* Left Arrow */}
             {selectedWorkIndex !== null && (
@@ -460,23 +456,29 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
                         className={`
                             relative flex-shrink-0 
                             w-[var(--item-width)]
-                            aspect-[4/5] 
+                            aspect-video
                             mr-[var(--gap)]
                             transition-all duration-700 ease-out
                             ${index === selectedWorkIndex ? 'scale-100 opacity-100 grayscale-0' : 'scale-90 opacity-40 grayscale blur-[1px] cursor-pointer'}
                         `}
                         onClick={() => index !== selectedWorkIndex && setSelectedWorkIndex(index)}
                     >
-                        <div className="w-full h-full overflow-hidden relative shadow-2xl shadow-black bg-gray-900">
-                            <img 
-                                src={work.img} 
-                                alt={work.title} 
+                        {/* ROUNDED CORNERS */}
+                        <div className="w-full h-full overflow-hidden relative shadow-2xl shadow-black bg-gray-900 border border-white/10 rounded-2xl">
+                             <video
+                                src={work.video}
+                                autoPlay
+                                muted={index !== selectedWorkIndex || isMuted} // Only play audio if active AND NOT MUTED by user
+                                loop
+                                playsInline
+                                webkit-playsinline="true"
+                                preload="auto"
                                 className="w-full h-full object-cover"
                             />
                             <div className={`absolute inset-0 bg-black/20 transition-opacity duration-500 ${index === selectedWorkIndex ? 'opacity-0' : 'opacity-100'}`}></div>
                             
                             <div className={`absolute bottom-0 left-0 w-full p-6 md:p-8 bg-gradient-to-t from-black via-black/50 to-transparent flex flex-col justify-end items-start transition-opacity duration-500 ${index === selectedWorkIndex ? 'opacity-100 delay-300' : 'opacity-0'}`}>
-                                <h2 className="text-3xl md:text-5xl font-black text-white uppercase tracking-tighter mb-2">{work.title}</h2>
+                                <h2 className="text-2xl md:text-5xl font-black text-white uppercase tracking-tighter mb-2">{work.title}</h2>
                                 <div className="flex flex-wrap items-center gap-4 text-xs md:text-sm text-gray-300 uppercase tracking-widest">
                                     <span>{work.client}</span>
                                     <span className="w-1 h-1 bg-white rounded-full"></span>

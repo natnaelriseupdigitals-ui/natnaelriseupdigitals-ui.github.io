@@ -5,20 +5,23 @@ import { Home } from './pages/Home';
 import { Works } from './pages/Works';
 import { About } from './pages/About';
 import { Contact } from './pages/Contact';
+import { Store } from './pages/Store';
 import { Page } from './types';
 
 // Asset Manifest for Preloading
+// Crucial: These URLs must match exactly what is used in the components to leverage browser caching.
 const ASSETS = {
-  video: "https://www.dropbox.com/scl/fi/tz20d2xwyzl770wkhehkx/IMG_0669-2.mp4?rlkey=wptpf6cnzoz5vbjvzkfh2si8t&st=r71hja1x&raw=1",
+  video: "https://www.dropbox.com/scl/fi/8n8x2l0ehc1d7fxai8aoh/this-one-took-a-while-inspo-from-scoobafiles-tylerbaileytravel-travel-nature.mp4?rlkey=g4jizjr8vfgqih1z01c9cbeu8&st=aolhwlws&raw=1",
   images: [
-    "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1200&q=80",
+    // Store - Prints
+    "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80", // Nightcall
+    "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80", // Apex
+    "https://images.unsplash.com/photo-1478760329108-5c3ed9d495a0?auto=format&fit=crop&w=800&q=80", // Void
+    "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=800&q=80", // Neon Tokyo
+    // Store - Merch
+    "https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=800&q=80", // Hoodie
+    "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=800&q=80", // Cap
+    "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=800&q=80", // Tee
   ]
 };
 
@@ -97,6 +100,8 @@ function App() {
         return <About />;
       case Page.CONTACT:
         return <Contact />;
+      case Page.STORE:
+        return <Store />;
       default:
         return <Home setPage={setCurrentPage} />;
     }
@@ -107,7 +112,7 @@ function App() {
       <div className="fixed inset-0 bg-black z-50 flex items-center justify-center">
         <div className="text-center">
             <h1 className="text-4xl md:text-6xl font-black text-white uppercase tracking-tighter animate-pulse">
-                Orbit<span className="text-gray-500">Visuals</span>
+                Cian<span className="text-gray-500">Cinematic</span>
             </h1>
             <div className="mt-4 w-48 h-[2px] bg-gray-800 mx-auto overflow-hidden">
                 <div className="h-full bg-white animate-[loading_1.5s_ease-in-out_infinite]"></div>

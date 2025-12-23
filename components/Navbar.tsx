@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Page } from '../types';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ShoppingBag } from 'lucide-react';
 
 interface NavbarProps {
   currentPage: Page;
@@ -22,6 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage }) => {
   const navLinks = [
     { label: 'Work', value: Page.WORKS },
     { label: 'About', value: Page.ABOUT },
+    { label: 'Store', value: Page.STORE },
     { label: 'Contact', value: Page.CONTACT },
   ];
 
@@ -44,7 +45,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage }) => {
           onClick={() => handleNavClick(Page.HOME)}
         >
           <h1 className="text-2xl font-black tracking-tighter uppercase text-white group-hover:opacity-80 transition-opacity">
-            Orbit<span className="text-gray-400 font-light">Visuals</span>
+            Cian<span className="text-gray-400 font-light">Cinematic</span>
           </h1>
         </div>
 
@@ -62,10 +63,16 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage }) => {
               <span className={`absolute -bottom-2 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full ${currentPage === link.value ? 'w-full' : ''}`}></span>
             </button>
           ))}
+          <button onClick={() => handleNavClick(Page.STORE)} className="text-white hover:text-gray-300 transition-colors">
+            <ShoppingBag size={20} strokeWidth={1.5} />
+          </button>
         </div>
 
         {/* Mobile Toggle */}
-        <div className="md:hidden">
+        <div className="md:hidden flex items-center gap-4">
+          <button onClick={() => handleNavClick(Page.STORE)} className="text-white">
+            <ShoppingBag size={20} strokeWidth={1.5} />
+          </button>
           <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="text-white p-2">
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>

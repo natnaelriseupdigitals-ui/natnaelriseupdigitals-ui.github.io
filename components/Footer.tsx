@@ -35,7 +35,7 @@ export const Footer: React.FC<FooterProps> = ({ setPage }) => {
               <a href="#" className="text-gray-400 hover:text-white transition-colors"><Mail /></a>
             </div>
             <p className="text-gray-600 text-sm uppercase tracking-widest">
-              © {new Date().getFullYear()} Orbit Visuals. All rights reserved.
+              © {new Date().getFullYear()} Cian Cinematic. All rights reserved.
             </p>
           </div>
         </div>

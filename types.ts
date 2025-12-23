@@ -4,6 +4,7 @@ export enum Page {
   HOME = 'HOME',
   WORKS = 'WORKS',
   ABOUT = 'ABOUT',
+  STORE = 'STORE',
   CONTACT = 'CONTACT'
 }
 

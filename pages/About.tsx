@@ -78,7 +78,7 @@ export const About: React.FC = () => {
             onPlaying={() => setIsVideoPlaying(true)}
             style={{ pointerEvents: 'none' }}
         >
-            <source src="https://www.dropbox.com/scl/fi/tz20d2xwyzl770wkhehkx/IMG_0669-2.mp4?rlkey=wptpf6cnzoz5vbjvzkfh2si8t&st=r71hja1x&raw=1" type="video/mp4" />
+            <source src="https://www.dropbox.com/scl/fi/8n8x2l0ehc1d7fxai8aoh/this-one-took-a-while-inspo-from-scoobafiles-tylerbaileytravel-travel-nature.mp4?rlkey=g4jizjr8vfgqih1z01c9cbeu8&st=aolhwlws&raw=1" type="video/mp4" />
         </video>
 
          {/* Scroll Indicator */}
@@ -94,7 +94,7 @@ export const About: React.FC = () => {
       <section className="py-20 md:py-32 container mx-auto px-6 flex flex-col justify-center items-start">
              <Reveal>
                 <h1 className="text-5xl md:text-8xl font-black uppercase tracking-tighter mb-4 leading-none text-white">
-                    We are<br />Orbit Visuals.
+                    We are<br />Cian Cinematic.
                 </h1>
              </Reveal>
              <Reveal delay={0.2}>
@@ -122,7 +122,7 @@ export const About: React.FC = () => {
             <Reveal delay={0.5}>
                 <div className="space-y-6 text-gray-400 text-base md:text-lg leading-relaxed">
                     <p>
-                        Orbit Visuals was born from a desire to break the mold of traditional production. In a world saturated with content, only the boldest visuals survive. We combine high-end cinematography with fast-paced editing techniques to create work that demands attention.
+                        Cian Cinematic was born from a desire to break the mold of traditional production. In a world saturated with content, only the boldest visuals survive. We combine high-end cinematography with fast-paced editing techniques to create work that demands attention.
                     </p>
                     <p>
                         From the streets of Tokyo to the coastlines of California, our lens has no boundaries. We are storytellers, adrenaline junkies, and perfectionists dedicated to elevating your brand to the stratosphere.

@@ -1,94 +1,113 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Reveal } from '../components/Reveal';
-import { ChevronLeft, ChevronRight, ArrowUpRight, MoveRight, ArrowLeft } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowUpRight, MoveRight, ArrowLeft, Play, Volume2, VolumeX } from 'lucide-react';
 
-// Data with 4:5 aspect ratio images and requested categories
-const works = [
+// --- DATA CONFIGURATION ---
+
+interface WorkItem {
+  id: number;
+  title: string;
+  category: string;
+  client: string;
+  year: string;
+  video: string;
+  type: 'vertical' | 'horizontal';
+}
+
+const verticalWorks: WorkItem[] = [
   { 
-    id: 1, 
-    title: "Eternal Vows", 
-    category: "Wedding Photography", 
-    client: "Private",
+    id: 101, 
+    title: "Drift State", 
+    category: "Automotive", 
+    client: "Personal",
     year: "2024",
-    img: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80", 
+    video: "https://www.dropbox.com/scl/fi/opah137bqtjtg4gb0kboq/drifting.mp4?rlkey=swzdq9ktnrgyw19ypehiif5qt&st=dbwsvnt5&raw=1",
+    type: 'vertical'
   },
   { 
-    id: 2, 
-    title: "Neon Gaze", 
-    category: "Portrait Photography", 
-    client: "Editorial",
-    year: "2023",
-    img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=1200&q=80", 
-  },
-  { 
-    id: 3, 
-    title: "Lost in Tokyo", 
-    category: "Travel Photography", 
-    client: "Condé Nast",
-    year: "2023",
-    img: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1200&q=80", 
-  },
-  { 
-    id: 4, 
-    title: "Silk & Shadow", 
-    category: "Fashion Photography", 
-    client: "Vogue",
+    id: 102, 
+    title: "Golden Horizon", 
+    category: "Travel", 
+    client: "Explore",
     year: "2024",
-    img: "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=80", 
+    video: "https://www.dropbox.com/scl/fi/x9evw26r2tb2gad8xgdc3/one-of-the-best-sunsets-I-ve-ever-seen-1.mp4?rlkey=lrfx2usxs0q3enpkuu8j0yp45&st=dzu6xf1r&raw=1",
+    type: 'vertical'
   },
   { 
-    id: 5, 
-    title: "Alpine Silence", 
-    category: "Travel Photography", 
-    client: "Nat Geo",
-    year: "2024",
-    img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=1200&q=80", 
-  },
-  { 
-    id: 6, 
-    title: "Golden Hour", 
-    category: "Wedding Photography", 
-    client: "Private",
+    id: 103, 
+    title: "Spring Awakening", 
+    category: "Nature", 
+    client: "Season",
     year: "2023",
-    img: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=1200&q=80", 
+    video: "https://www.dropbox.com/scl/fi/1z2ekv7ryjusshq00r6r9/spring-has-finally-come-around-in-Aus.mp4?rlkey=rixpg341bipzjbtbwq23pvzmq&st=vzpziorp&raw=1",
+    type: 'vertical'
   },
   { 
-    id: 7, 
-    title: "Raw Emotion", 
-    category: "Portrait Photography", 
-    client: "Time",
+    id: 104, 
+    title: "Into the Wild", 
+    category: "Lifestyle", 
+    client: "Camp",
     year: "2024",
-    img: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?auto=format&fit=crop&w=1200&q=80", 
+    video: "https://www.dropbox.com/scl/fi/4ikzitd8c2dyc30d6ksee/one-hell-of-a-camp-spot.mp4?rlkey=iwdbpto7b36x849v7v45ukg6e&st=do5mcpxw&raw=1",
+    type: 'vertical'
+  }
+];
+
+const horizontalWorks: WorkItem[] = [
+  { 
+    id: 201, 
+    title: "Urban Flow", 
+    category: "Cinematography", 
+    client: "Concept",
+    year: "2024",
+    video: "https://www.dropbox.com/scl/fi/07gehbamxu1153uwfzu3e/home-.-horizontal.mp4?rlkey=p7lqi0wglmiwsxgy1wy64jbrq&st=g5vajvz6&raw=1",
+    type: 'horizontal'
   },
   { 
-    id: 8, 
-    title: "Urban Chic", 
-    category: "Fashion Photography", 
-    client: "Zara",
-    year: "2023",
-    img: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?auto=format&fit=crop&w=1200&q=80", 
+    id: 202, 
+    title: "Coastal Vibe", 
+    category: "Travel", 
+    client: "Explore",
+    year: "2024",
+    video: "https://www.dropbox.com/scl/fi/85hdwt3zp14t906l471rb/more-like-these-Or-the-pov-vids-horizontal.mp4?rlkey=yaqwfzz8mjo8xonmztt9lk8py&st=xufsz2at&raw=1",
+    type: 'horizontal'
   },
+  { 
+    id: 203, 
+    title: "Purple Sunset", 
+    category: "Nature", 
+    client: "Atmosphere",
+    year: "2023",
+    video: "https://www.dropbox.com/scl/fi/gvz4m0i4qt6tmhuwtszeu/purple-frames-cinematography-ocean-beach-sunset-horizontal.mp4?rlkey=okqprv70ip1yf0lonxl8i3fqy&st=wd4elu9s&raw=1",
+    type: 'horizontal'
+  }
 ];
 
 export const Works: React.FC = () => {
   const [viewMode, setViewMode] = useState<'gallery' | 'carousel'>('gallery');
+  const [activeSection, setActiveSection] = useState<'vertical' | 'horizontal'>('vertical');
   const [activeIndex, setActiveIndex] = useState(0);
+  const [isMuted, setIsMuted] = useState(false); // Default to sound ON when fully open
 
   // Drag Logic Refs
   const dragStartX = useRef(0);
   const isDragging = useRef(false);
 
-  // Scroll to top when switching to gallery, but maintain position when opening carousel
+  // Scroll to top when switching to gallery
   useEffect(() => {
     if (viewMode === 'gallery') {
        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [viewMode]);
 
-  const handleImageClick = (index: number) => {
+  const handleWorkClick = (index: number, type: 'vertical' | 'horizontal') => {
+    setActiveSection(type);
     setActiveIndex(index);
     setViewMode('carousel');
   };
+
+  // Derived state for current playlist
+  const currentWorks = activeSection === 'vertical' ? verticalWorks : horizontalWorks;
 
   const handlePrev = () => {
     if (activeIndex > 0) {
@@ -97,7 +116,7 @@ export const Works: React.FC = () => {
   };
 
   const handleNext = () => {
-    if (activeIndex < works.length - 1) {
+    if (activeIndex < currentWorks.length - 1) {
       setActiveIndex(prev => prev + 1);
     }
   };
@@ -113,7 +132,7 @@ export const Works: React.FC = () => {
   useEffect(() => {
       window.addEventListener('keydown', handleKeyDown);
       return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [activeIndex, viewMode]);
+  }, [activeIndex, viewMode, currentWorks]);
 
   // --- Mouse & Touch Handlers for Swipe ---
 
@@ -130,7 +149,6 @@ export const Works: React.FC = () => {
     const clientX = 'changedTouches' in e ? e.changedTouches[0].clientX : (e as React.MouseEvent).clientX;
     const diff = dragStartX.current - clientX;
     
-    // Threshold for swipe
     if (diff > 50) {
         handleNext();
     } else if (diff < -50) {
@@ -146,45 +164,110 @@ export const Works: React.FC = () => {
         className={`w-full transition-opacity duration-500 ease-in-out ${viewMode === 'gallery' ? 'opacity-100' : 'opacity-0 pointer-events-none fixed inset-0'}`}
       >
           <div className="pt-24 pb-20 container mx-auto px-4 md:px-6">
+              
+              {/* Header */}
               <Reveal width="100%">
-                <div className="flex justify-between items-end mb-8 md:mb-16">
-                    <h1 className="text-4xl md:text-8xl font-black uppercase tracking-tighter text-white">
-                        Selected<br />Works
-                    </h1>
-                    <div className="hidden md:block text-gray-400 text-sm tracking-widest uppercase">
+                <div className="flex justify-between items-end mb-12">
+                    <div>
+                        <h1 className="text-4xl md:text-8xl font-black uppercase tracking-tighter text-white">
+                            Selected<br />Works
+                        </h1>
+                    </div>
+                    <div className="hidden md:block text-gray-400 text-sm tracking-widest uppercase mb-2">
                         Scroll to explore
                     </div>
                 </div>
               </Reveal>
 
-              {/* Mobile: 2-col grid with tight gap (Photos App style). Desktop: 4-col grid. */}
-              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-6">
-                  {works.map((work, index) => (
-                      <Reveal key={work.id} delay={index * 0.05} width="100%">
-                          <div 
-                            onClick={() => handleImageClick(index)}
-                            className="w-full group relative cursor-pointer overflow-hidden aspect-[4/5] bg-gray-900"
-                          >
-                              <img 
-                                src={work.img} 
-                                alt={work.title} 
-                                className="w-full h-full object-cover transition-transform duration-700 md:group-hover:scale-105 opacity-90 md:group-hover:opacity-100"
-                              />
-                              
-                              {/* Overlay - Visible on Mobile (gradient), Hidden on Desktop until Hover */}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent flex flex-col justify-end p-4 md:p-6 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300">
-                                  <p className="text-orange-500 text-[10px] md:text-xs font-bold uppercase tracking-widest mb-1 md:mb-2 md:transform md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-300 delay-75">{work.category}</p>
-                                  <h3 className="text-sm md:text-xl font-bold text-white uppercase tracking-tight md:transform md:translate-y-4 md:group-hover:translate-y-0 transition-transform duration-300 delay-100">{work.title}</h3>
+              {/* VERTICAL SECTION */}
+              <div className="mb-20">
+                  <Reveal>
+                    <div className="flex items-center gap-4 mb-8">
+                        <div className="w-8 h-[1px] bg-white/50"></div>
+                        <h3 className="text-xl font-bold uppercase tracking-widest text-white">Shorts & Reels</h3>
+                    </div>
+                  </Reveal>
+                  
+                  {/* Mobile: 2-column grid. Desktop: 4-column grid */}
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6">
+                      {verticalWorks.map((work, index) => (
+                          <Reveal key={work.id} delay={index * 0.1} width="100%">
+                              <div 
+                                onClick={() => handleWorkClick(index, 'vertical')}
+                                className="group relative cursor-pointer overflow-hidden aspect-[9/16] bg-gray-900 rounded-2xl border border-white/5"
+                              >
+                                  <video 
+                                    src={work.video} 
+                                    muted 
+                                    loop 
+                                    playsInline
+                                    webkit-playsinline="true"
+                                    autoPlay
+                                    preload="auto"
+                                    className="w-full h-full object-cover transition-transform duration-700 md:group-hover:scale-110 opacity-100"
+                                  />
+                                  
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-4 transition-opacity duration-300">
+                                      <p className="text-orange-500 text-[10px] font-bold uppercase tracking-widest mb-1">{work.category}</p>
+                                      <h3 className="text-sm md:text-lg font-bold text-white uppercase tracking-tight">{work.title}</h3>
+                                  </div>
+                                  
+                                  {/* Play Icon Overlay */}
+                                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                      <div className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20">
+                                          <Play size={20} fill="white" className="ml-1" />
+                                      </div>
+                                  </div>
                               </div>
-                          </div>
-                      </Reveal>
-                  ))}
+                          </Reveal>
+                      ))}
+                  </div>
+              </div>
+
+              {/* HORIZONTAL SECTION */}
+              <div className="mb-20">
+                  <Reveal>
+                    <div className="flex items-center gap-4 mb-8">
+                        <div className="w-8 h-[1px] bg-white/50"></div>
+                        <h3 className="text-xl font-bold uppercase tracking-widest text-white">Cinematic Films</h3>
+                    </div>
+                  </Reveal>
+
+                   {/* Mobile: 1-column stack. Desktop: 3-column grid */}
+                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+                      {horizontalWorks.map((work, index) => (
+                          <Reveal key={work.id} delay={index * 0.1} width="100%">
+                              <div 
+                                onClick={() => handleWorkClick(index, 'horizontal')}
+                                className="group relative cursor-pointer overflow-hidden aspect-video bg-gray-900 rounded-2xl border border-white/5"
+                              >
+                                  <video 
+                                    src={work.video} 
+                                    muted 
+                                    loop 
+                                    playsInline
+                                    webkit-playsinline="true"
+                                    autoPlay
+                                    preload="auto"
+                                    className="w-full h-full object-cover transition-transform duration-700 md:group-hover:scale-105 opacity-100"
+                                  />
+                                  
+                                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-6 transition-opacity duration-300">
+                                      <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                                        <p className="text-orange-500 text-xs font-bold uppercase tracking-widest mb-2">{work.category}</p>
+                                        <h3 className="text-xl md:text-2xl font-bold text-white uppercase tracking-tight">{work.title}</h3>
+                                      </div>
+                                  </div>
+                              </div>
+                          </Reveal>
+                      ))}
+                   </div>
               </div>
           </div>
       </div>
 
 
-      {/* --- CAROUSEL VIEW --- */}
+      {/* --- CAROUSEL VIEW (SMART PLAYER) --- */}
       <div 
         className={`fixed inset-0 z-50 bg-orbit-black flex flex-col justify-center overflow-hidden transition-all duration-500 ${viewMode === 'carousel' ? 'opacity-100 visible' : 'opacity-0 invisible'}`}
         onMouseDown={handleMouseDown}
@@ -192,19 +275,19 @@ export const Works: React.FC = () => {
         onTouchStart={handleMouseDown}
         onTouchEnd={handleMouseUp}
       >
+        {/* Dynamic CSS Variables based on Video Type */}
         <style>{`
             :root {
-            /* Carousel specific variables for 4:5 Aspect Ratio */
-            --item-width: 80vw;
-            --gap: 5vw;
-            --offset-start: 10vw; /* (100 - 80) / 2 */
+                --item-width: ${activeSection === 'vertical' ? '80vw' : '90vw'};
+                --gap: 5vw;
+                --offset-start: ${activeSection === 'vertical' ? '10vw' : '5vw'};
             }
             @media (min-width: 768px) {
-            :root {
-                --item-width: 35vw; /* Narrower width for portrait images on desktop to fit height */
-                --gap: 6vw;
-                --offset-start: 32.5vw; /* (100 - 35) / 2 */
-            }
+                :root {
+                    --item-width: ${activeSection === 'vertical' ? '35vw' : '65vw'};
+                    --gap: 6vw;
+                    --offset-start: ${activeSection === 'vertical' ? '32.5vw' : '17.5vw'};
+                }
             }
         `}</style>
 
@@ -221,7 +304,6 @@ export const Works: React.FC = () => {
 
         {/* Navigation / Header */}
         <div className="absolute top-0 left-0 w-full z-20 p-6 md:p-12 flex justify-between items-start pointer-events-none">
-            {/* Pointer events auto on buttons */}
             <button 
                 onClick={() => setViewMode('gallery')}
                 className="group flex items-center gap-3 text-white uppercase tracking-widest text-sm font-bold hover:text-gray-300 transition-colors pointer-events-auto"
@@ -231,14 +313,24 @@ export const Works: React.FC = () => {
                 </div>
                 <span className="hidden md:inline">Back to Gallery</span>
             </button>
+            
+            <div className="pointer-events-auto flex items-center gap-4">
+                 {/* Audio Toggle */}
+                <button 
+                    onClick={() => setIsMuted(!isMuted)}
+                    className="p-3 border border-white/20 rounded-full hover:bg-white hover:text-black transition-all text-white"
+                >
+                    {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                </button>
 
-            <div className="text-right pointer-events-auto">
-                <h2 className="text-xl md:text-2xl font-black uppercase tracking-tighter text-white opacity-80">
-                    {works[activeIndex].category}
-                </h2>
-                <span className="text-white/40 text-sm font-mono tracking-widest block mt-2">
-                    {String(activeIndex + 1).padStart(2, '0')} / {String(works.length).padStart(2, '0')}
-                </span>
+                <div className="text-right">
+                    <h2 className="text-xl md:text-2xl font-black uppercase tracking-tighter text-white opacity-80">
+                        {currentWorks[activeIndex].category}
+                    </h2>
+                    <span className="text-white/40 text-sm font-mono tracking-widest block mt-2">
+                        {String(activeIndex + 1).padStart(2, '0')} / {String(currentWorks.length).padStart(2, '0')}
+                    </span>
+                </div>
             </div>
         </div>
 
@@ -256,7 +348,7 @@ export const Works: React.FC = () => {
             )}
 
             {/* Right Arrow */}
-            {activeIndex < works.length - 1 && (
+            {activeIndex < currentWorks.length - 1 && (
             <button 
                 onClick={(e) => { e.stopPropagation(); handleNext(); }}
                 className="absolute right-4 md:right-12 z-30 p-4 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-white hover:bg-white hover:text-black transition-all duration-300 group hidden md:block"
@@ -272,24 +364,30 @@ export const Works: React.FC = () => {
                     transform: `translateX(calc(var(--offset-start) - (var(--item-width) + var(--gap)) * ${activeIndex}))` 
                 }}
             >
-                {works.map((work, index) => (
+                {currentWorks.map((work, index) => (
                     <div 
                         key={work.id}
                         className={`
                             relative flex-shrink-0 
                             w-[var(--item-width)]
-                            aspect-[4/5] 
+                            ${activeSection === 'vertical' ? 'aspect-[9/16]' : 'aspect-video'} 
                             mr-[var(--gap)]
                             transition-all duration-700 ease-out
                             ${index === activeIndex ? 'scale-100 opacity-100 grayscale-0' : 'scale-90 opacity-40 grayscale blur-[1px] cursor-pointer'}
                         `}
                         onClick={() => index !== activeIndex && setActiveIndex(index)}
                     >
-                        <div className="w-full h-full overflow-hidden relative shadow-2xl shadow-black bg-gray-900">
-                            <img 
-                                src={work.img} 
-                                alt={work.title} 
-                                className="w-full h-full object-cover pointer-events-none" // prevent img drag
+                        {/* ROUNDED CORNERS */}
+                        <div className="w-full h-full overflow-hidden relative shadow-2xl shadow-black bg-gray-900 border border-white/10 rounded-2xl">
+                            <video 
+                                src={work.video} 
+                                muted={index !== activeIndex || isMuted} // Only play audio if active AND NOT muted by user
+                                loop 
+                                playsInline
+                                webkit-playsinline="true"
+                                autoPlay
+                                preload="auto"
+                                className="w-full h-full object-cover pointer-events-none"
                             />
                             {/* Overlay */}
                             <div className={`absolute inset-0 bg-black/20 transition-opacity duration-500 ${index === activeIndex ? 'opacity-0' : 'opacity-100'}`}></div>
@@ -313,10 +411,10 @@ export const Works: React.FC = () => {
             </div>
         </div>
 
-        {/* Mobile Controls */}
+        {/* Mobile Dots */}
         <div className="flex md:hidden justify-center px-6 items-center w-full absolute bottom-8 z-30 pointer-events-none">
             <div className="flex gap-2 pointer-events-auto">
-                {works.map((_, idx) => (
+                {currentWorks.map((_, idx) => (
                     <div 
                         key={idx} 
                         className={`h-1 rounded-full transition-all duration-300 ${idx === activeIndex ? 'w-6 bg-white' : 'w-1.5 bg-gray-700'}`}
