@@ -63,15 +63,15 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, setPage }) => {
               <span className={`absolute -bottom-2 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full ${currentPage === link.value ? 'w-full' : ''}`}></span>
             </button>
           ))}
+          {/* Desktop Cart Icon */}
           <button onClick={() => handleNavClick(Page.CART)} className="text-white hover:text-gray-300 transition-colors relative">
             <ShoppingCart size={20} strokeWidth={1.5} />
-            {/* Optional dot if item in cart */}
-            {/* <div className="absolute -top-1 -right-1 w-2 h-2 bg-white rounded-full"></div> */}
           </button>
         </div>
 
         {/* Mobile Toggle */}
         <div className="md:hidden flex items-center gap-4">
+          {/* Mobile Cart Icon */}
           <button onClick={() => handleNavClick(Page.CART)} className="text-white">
             <ShoppingCart size={20} strokeWidth={1.5} />
           </button>

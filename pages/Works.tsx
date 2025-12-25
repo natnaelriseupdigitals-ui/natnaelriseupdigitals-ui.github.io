@@ -16,7 +16,8 @@ interface WorkItem {
 }
 
 const verticalWorks: WorkItem[] = [
-  { id: 101, title: "Drift State", category: "Automotive", client: "Personal", year: "2024", video: "https://www.dropbox.com/scl/fi/opah137bqtjtg4gb0kboq/drifting.mp4?rlkey=swzdq9ktnrgyw19ypehiif5qt&st=dbwsvnt5&raw=1", type: 'vertical' },
+  // CHANGED: Renamed Drift State to Pacific Dreams to match content (Sunset)
+  { id: 101, title: "Pacific Dreams", category: "Nature", client: "Personal", year: "2024", video: "https://www.dropbox.com/scl/fi/opah137bqtjtg4gb0kboq/drifting.mp4?rlkey=swzdq9ktnrgyw19ypehiif5qt&st=dbwsvnt5&raw=1", type: 'vertical' },
   { id: 102, title: "Golden Horizon", category: "Travel", client: "Explore", year: "2024", video: "https://www.dropbox.com/scl/fi/x9evw26r2tb2gad8xgdc3/one-of-the-best-sunsets-I-ve-ever-seen-1.mp4?rlkey=lrfx2usxs0q3enpkuu8j0yp45&st=dzu6xf1r&raw=1", type: 'vertical' },
   { id: 103, title: "Spring Awakening", category: "Nature", client: "Season", year: "2023", video: "https://www.dropbox.com/scl/fi/1z2ekv7ryjusshq00r6r9/spring-has-finally-come-around-in-Aus.mp4?rlkey=rixpg341bipzjbtbwq23pvzmq&st=vzpziorp&raw=1", type: 'vertical' },
   { id: 104, title: "Into the Wild", category: "Lifestyle", client: "Camp", year: "2024", video: "https://www.dropbox.com/scl/fi/4ikzitd8c2dyc30d6ksee/one-hell-of-a-camp-spot.mp4?rlkey=iwdbpto7b36x849v7v45ukg6e&st=do5mcpxw&raw=1", type: 'vertical' }
@@ -67,7 +68,7 @@ export const Works: React.FC = () => {
   const [viewMode, setViewMode] = useState<'gallery' | 'carousel'>('gallery');
   const [activeSection, setActiveSection] = useState<'vertical' | 'horizontal'>('vertical');
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isMuted, setIsMuted] = useState(true); 
+  const [isMuted, setIsMuted] = useState(false); 
 
   // Drag Logic Refs
   const dragStartX = useRef(0);
@@ -76,8 +77,11 @@ export const Works: React.FC = () => {
   useEffect(() => {
     if (viewMode === 'gallery') {
        window.scrollTo({ top: 0, behavior: 'smooth' });
+       // Mute when returning to gallery
+       setIsMuted(true);
     } else {
-        setIsMuted(true);
+        // CHANGED: Automatically unmute when opening the video carousel
+        setIsMuted(false);
     }
   }, [viewMode]);
 
@@ -85,6 +89,8 @@ export const Works: React.FC = () => {
     setActiveSection(type);
     setActiveIndex(index);
     setViewMode('carousel');
+    // Ensure muted is off when opening
+    setIsMuted(false);
   };
 
   const currentWorks = activeSection === 'vertical' ? verticalWorks : horizontalWorks;
@@ -208,14 +214,8 @@ export const Works: React.FC = () => {
             @media (min-width: 768px) {
                 :root {
                     /* DESKTOP OPTIMIZATIONS */
-                    /* 
-                       Logic: For vertical videos on desktop, 35vw width is often too tall (>100vh) for standard 16:9 screens.
-                       We switch to a VH-based calculation to ensure the video fits in height.
-                       70vh height for a 9:16 video = approx 39.375vh width.
-                    */
                     --item-width: ${activeSection === 'vertical' ? 'calc(70vh * 9 / 16)' : '65vw'};
                     --gap: 6vw;
-                    /* Center calculation differs based on item width */
                     --offset-start: ${activeSection === 'vertical' ? 'calc(50vw - (70vh * 9 / 16) / 2)' : '17.5vw'};
                 }
             }
@@ -280,7 +280,8 @@ export const Works: React.FC = () => {
                                     <span>{work.client}</span><span className="w-1 h-1 bg-white rounded-full"></span><span>{work.year}</span>
                                 </div>
                                 <div className="mt-6 pointer-events-auto">
-                                    <Button variant="ghost" icon="diagonal">View Full Case</Button>
+                                    {/* UPDATED: Button is now Primary Solid style to match Store */}
+                                    <Button variant="primary" icon="diagonal">View Full Case</Button>
                                 </div>
                             </div>
                         </div>

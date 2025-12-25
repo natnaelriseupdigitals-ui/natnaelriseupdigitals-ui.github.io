@@ -15,7 +15,8 @@ const horizontalWorks = [
 ];
 
 const verticalWorks = [
-  { id: 101, title: "Drift State", category: "Automotive", client: "Personal", year: "2024", video: "https://www.dropbox.com/scl/fi/opah137bqtjtg4gb0kboq/drifting.mp4?rlkey=swzdq9ktnrgyw19ypehiif5qt&st=dbwsvnt5&raw=1" },
+  // CHANGED: Renamed Drift State to Pacific Dreams to match content
+  { id: 101, title: "Pacific Dreams", category: "Nature", client: "Personal", year: "2024", video: "https://www.dropbox.com/scl/fi/opah137bqtjtg4gb0kboq/drifting.mp4?rlkey=swzdq9ktnrgyw19ypehiif5qt&st=dbwsvnt5&raw=1" },
   { id: 102, title: "Golden Horizon", category: "Travel", client: "Explore", year: "2024", video: "https://www.dropbox.com/scl/fi/x9evw26r2tb2gad8xgdc3/one-of-the-best-sunsets-I-ve-ever-seen-1.mp4?rlkey=lrfx2usxs0q3enpkuu8j0yp45&st=dzu6xf1r&raw=1" },
   { id: 103, title: "Spring Awakening", category: "Nature", client: "Season", year: "2023", video: "https://www.dropbox.com/scl/fi/1z2ekv7ryjusshq00r6r9/spring-has-finally-come-around-in-Aus.mp4?rlkey=rixpg341bipzjbtbwq23pvzmq&st=vzpziorp&raw=1" },
   { id: 104, title: "Into the Wild", category: "Lifestyle", client: "Camp", year: "2024", video: "https://www.dropbox.com/scl/fi/4ikzitd8c2dyc30d6ksee/one-hell-of-a-camp-spot.mp4?rlkey=iwdbpto7b36x849v7v45ukg6e&st=do5mcpxw&raw=1" }
@@ -130,7 +131,8 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
             </Reveal>
             <Reveal delay={0.2}>
                 <div className="hidden md:block">
-                    <Button variant="ghost" icon="arrow" onClick={() => setPage(Page.WORKS)}>View All Projects</Button>
+                    {/* UPDATED: Button is now Primary Solid style */}
+                    <Button variant="primary" icon="arrow" onClick={() => setPage(Page.WORKS)}>View All Projects</Button>
                 </div>
             </Reveal>
         </div>
@@ -189,7 +191,8 @@ export const Home: React.FC<HomeProps> = ({ setPage }) => {
 
         {/* Mobile View All Button */}
         <div className="container mx-auto px-6 mt-4 flex justify-center md:hidden">
-            <Button variant="outline" icon="arrow" onClick={() => setPage(Page.WORKS)}>View All Projects</Button>
+            {/* UPDATED: Button is now Primary Solid style */}
+            <Button variant="primary" icon="arrow" onClick={() => setPage(Page.WORKS)}>View All Projects</Button>
         </div>
       </section>
 

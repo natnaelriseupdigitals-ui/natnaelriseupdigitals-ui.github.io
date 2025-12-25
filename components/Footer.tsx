@@ -16,8 +16,10 @@ export const Footer: React.FC<FooterProps> = ({ setPage }) => {
             <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter mb-6">
               Let's create<br />something unreal.
             </h2>
+            {/* UPDATED: Button is now Primary Solid style */}
             <Button 
-                variant="outline"
+                variant="primary"
+                icon="arrow"
                 onClick={() => {
                     setPage(Page.CONTACT);
                     window.scrollTo({ top: 0, behavior: 'smooth' });

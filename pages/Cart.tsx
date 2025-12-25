@@ -70,7 +70,8 @@ export const Cart: React.FC<CartProps> = ({ setPage }) => {
                             <span>Total</span>
                             <span>${cartItems.reduce((acc, item) => acc + item.price, 0).toFixed(2)}</span>
                         </div>
-                        <Button fullWidth className="md:w-80">
+                        {/* UPDATED: Primary Button */}
+                        <Button variant="primary" fullWidth className="md:w-80">
                             Checkout
                         </Button>
                         <p className="text-xs text-gray-500 uppercase tracking-widest text-center md:text-right w-full md:w-80">
@@ -82,7 +83,8 @@ export const Cart: React.FC<CartProps> = ({ setPage }) => {
         ) : (
             <div className="text-center py-20 border border-dashed border-gray-800 rounded-2xl">
                 <p className="text-gray-500 mb-8">Your cart is empty.</p>
-                <Button onClick={() => setPage(Page.STORE)}>Start Shopping</Button>
+                {/* UPDATED: Primary Button */}
+                <Button variant="primary" onClick={() => setPage(Page.STORE)}>Start Shopping</Button>
             </div>
         )}
       </div>
