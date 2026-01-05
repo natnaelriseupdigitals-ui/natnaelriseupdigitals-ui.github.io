@@ -5,14 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CIAN CINEMATIC | Premium Creative Studio</title>
     
-    <!-- Preconnect to YouTube -->
-    <link rel="preconnect" href="https://www.youtube.com">
-    <link rel="preconnect" href="https://www.google.com">
+    <!-- Preconnect for Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://streamable.com">
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS Engine -->
+    
+    <!-- Tailwind CSS CDN (Restored for Immediate Stability) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -39,48 +40,28 @@
                 '100%': { opacity: '1', transform: 'translateY(0)' },
               }
             }
-          },
-        },
+          }
+        }
       }
     </script>
 
-    <!-- Essential CSS Fixes -->
-    <style>
-      body {
-        background-color: #050505;
-        color: #ffffff;
-        margin: 0;
-        padding: 0;
-        overflow-x: hidden;
-      }
-      .hide-scrollbar::-webkit-scrollbar {
-        display: none;
-      }
-      .hide-scrollbar {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }
-      
-      /* Reset for video elements */
-      video, iframe {
-        max-width: 100%;
-      }
-    </style>
-
-    <!-- Import Map for React -->
+    <!-- ImportMap (Restored for Dependency Loading) -->
     <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@^19.2.3",
-        "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-        "react/": "https://esm.sh/react@^19.2.3/",
-        "lucide-react": "https://esm.sh/lucide-react@^0.562.0",
-        "vite": "https://esm.sh/vite@^7.3.0",
-        "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2"
-      }
-    }
-    </script>
-</head>
+{
+  "imports": {
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
+    "react": "https://esm.sh/react@18.2.0",
+    "lucide-react": "https://esm.sh/lucide-react@0.344.0",
+    "vite": "https://esm.sh/vite@5.1.5",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@4.2.1",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/"
+  }
+}
+</script>
+  </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/index.tsx"></script>

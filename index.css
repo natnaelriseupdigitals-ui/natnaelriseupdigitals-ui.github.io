@@ -2,11 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global Resets & Base Styles */
 body {
   background-color: #050505;
   color: #ffffff;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
 }
 
+/* Scrollbar Hiding Utilities */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
@@ -16,6 +21,12 @@ body {
   scrollbar-width: none;
 }
 
+/* Video Element Resets */
+video, iframe {
+  max-width: 100%;
+}
+
+/* Text Effects */
 .text-outline {
   -webkit-text-stroke: 1px rgba(255, 255, 255, 0.2);
   color: transparent;
