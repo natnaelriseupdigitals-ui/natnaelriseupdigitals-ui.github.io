@@ -26,6 +26,7 @@ const BACKGROUND_ASSETS = {
 const GlobalHeroVideo = ({ currentPage }: { currentPage: Page }) => {
     const shouldShow = currentPage === Page.HOME || currentPage === Page.ABOUT;
     // Streamable Embed: Autoplay, Mute, Loop, No Controls
+    // Production ID: siftry
     const videoId = "siftry";
     const embedUrl = `https://streamable.com/e/${videoId}?autoplay=1&muted=1&loop=1&controls=0&nocontrols=1`;
 
