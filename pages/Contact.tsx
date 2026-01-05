@@ -68,12 +68,15 @@ export const Contact: React.FC = () => {
                         <div className="space-y-2">
                             <label className="text-xs uppercase tracking-widest text-gray-500">Project Type</label>
                             <div className="relative">
-                                <select className="w-full bg-transparent border-b border-gray-700 py-3 md:py-4 text-white text-lg md:text-xl focus:outline-none focus:border-white transition-colors appearance-none rounded-none">
-                                    <option className="bg-black text-gray-400" value="" disabled selected>Select an option</option>
-                                    <option className="bg-black text-white">Commercial Video</option>
-                                    <option className="bg-black text-white">Photography</option>
-                                    <option className="bg-black text-white">Music Video</option>
-                                    <option className="bg-black text-white">Brand Direction</option>
+                                <select 
+                                    className="w-full bg-transparent border-b border-gray-700 py-3 md:py-4 text-white text-lg md:text-xl focus:outline-none focus:border-white transition-colors appearance-none rounded-none"
+                                    defaultValue=""
+                                >
+                                    <option className="bg-black text-gray-400" value="" disabled>Select an option</option>
+                                    <option className="bg-black text-white" value="Commercial Video">Commercial Video</option>
+                                    <option className="bg-black text-white" value="Photography">Photography</option>
+                                    <option className="bg-black text-white" value="Music Video">Music Video</option>
+                                    <option className="bg-black text-white" value="Brand Direction">Brand Direction</option>
                                 </select>
                                 <div className="absolute right-0 top-1/2 transform -translate-y-1/2 pointer-events-none text-gray-500">
                                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
